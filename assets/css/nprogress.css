@@ -1,0 +1,7 @@
+#nprogress .bar {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  height: 4px !important;
+  position: fixed !important; 
+  bottom: 0 !important; /* แสดงที่ด้านล่างของจอ */
+  top: auto !important; /* ปิดตำแหน่งด้านบน */
+}
