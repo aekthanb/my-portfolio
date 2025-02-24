@@ -7,14 +7,18 @@ export default defineNuxtConfig({
     base: "/my-portfolio/",
   },
   devtools: { enabled: false },
-  css: ["~/assets/css/main.css", "uikit/dist/css/uikit.min.css",
-    'nprogress/nprogress.css', '~/assets/css/nprogress.css'],
-  vite: {
-    plugins: [tailwindcss()],
-  },
+  css: [
+    "~/assets/css/main.css",
+    "uikit/dist/css/uikit.min.css",
+    "nprogress/nprogress.css",
+    "~/assets/css/nprogress.css",
+  ],
   app: {
     head: {
-      link: [{ rel: "icon", href: "/tailwind_icon.ico" }],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/personal.ico" }],
     },
+  },
+  vite: {
+    plugins: [tailwindcss()],
   },
 });
