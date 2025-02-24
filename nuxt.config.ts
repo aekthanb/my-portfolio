@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-02-23",
   target: "static",
   router: {
-    base: "/my-portfolio/", 
+    base: "/my-portfolio/",
   },
   devtools: { enabled: false },
   css: [
@@ -15,5 +15,10 @@ export default defineNuxtConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+  },
+  app: {
+    head: {
+      link: [{ rel: "icon", href: "/tailwind_icon.ico" }],
+    },
   },
 });
