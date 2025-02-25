@@ -15,7 +15,7 @@
             <div class="w-full flex justify-center items-center">
               <!-- form -->
               <div class="w-[50%] h-[95%] rounded-md mt-6">
-                <form class="uk-form-stacked uk-animation-slide-left">
+                <form class="uk-form-stacked uk-animation-slide-left" @submit.prevent="handleSubmit">
                   <div class="uk-margin">
                     <div class="uk-form-controls">
                       <input
@@ -23,7 +23,9 @@
                         id="form-stacked-text"
                         type="text"
                         placeholder="Name"
+                        v-model="name"
                       />
+                      <span v-if="nameError" class="uk-text-danger">{{ nameError }}</span>
                     </div>
                   </div>
 
@@ -34,7 +36,9 @@
                         id="form-stacked-email"
                         type="email"
                         placeholder="Email"
+                        v-model="email"
                       />
+                      <span v-if="emailError" class="uk-text-danger">{{ emailError }}</span>
                     </div>
                   </div>
 
@@ -45,12 +49,14 @@
                         id="form-stacked-textarea"
                         rows="5"
                         placeholder="Message"
+                        v-model="message"
                       ></textarea>
+                      <span v-if="messageError" class="uk-text-danger">{{ messageError }}</span>
                     </div>
                   </div>
 
                   <div class="uk-margin">
-                    <button class="uk-button uk-button-default">Send Message</button>
+                    <button class="uk-button uk-button-default" type="submit">Send Message</button>
                   </div>
                 </form>
                 <div
@@ -92,9 +98,7 @@
                 <div
                   class="uk-text-center w-full h-80 mt-8 overflow-hidden relative group uk-animation-fade"
                 >
-                  <div
-                    class="uk-inline-clip uk-transition-toggle uk-light "
-                  >
+                  <div class="uk-inline-clip uk-transition-toggle uk-light">
                     <img
                       class="w-full h-full object-cover object-top cursor-pointer"
                       src="/public/map.png"
@@ -129,20 +133,34 @@
     </div>
   </div>
 </template>
-<script>
+
+<script setup>
 import UIkit from "uikit";
 import Icons from "uikit/dist/js/uikit-icons";
+import { useField } from "vee-validate";
+import * as yup from "yup";
 
 UIkit.use(Icons);
 
-export default {
-  methods: {
-    showNotification() {
-      UIkit.notification({
-        message: "Sorry, only available on Line",
-      });
-    },
-  },
+const { value: name, errorMessage: nameError, validate: validateName } = useField('name', yup.string().required('Name is required'));
+const { value: email, errorMessage: emailError, validate: validateEmail } = useField('email', yup.string().email('Invalid email').required('Email is required'));
+const { value: message, errorMessage: messageError, validate: validateMessage } = useField('message', yup.string().required('Message is required'));
+
+const handleSubmit = async () => {
+  const isNameValid = await validateName();
+  const isEmailValid = await validateEmail();
+  const isMessageValid = await validateMessage();
+
+  if (isNameValid && isEmailValid && isMessageValid) {
+    // Handle form submission
+    console.log("Form submitted", { name: name.value, email: email.value, message: message.value });
+  }
+};
+
+const showNotification = () => {
+  UIkit.notification({
+    message: "Sorry, only available on Line",
+  });
 };
 </script>
 
