@@ -15,17 +15,23 @@
             <div class="w-full flex justify-center items-center">
               <!-- form -->
               <div class="w-[50%] h-[95%] rounded-md mt-6">
-                <form class="uk-form-stacked uk-animation-slide-left" @submit.prevent="handleSubmit">
-                  <div class="uk-margin">
+                <form
+                  class="uk-form-stacked uk-animation-slide-left"
+                  @submit.prevent="handleSubmit"
+                >
+                  <div class="uk-margin ">
                     <div class="uk-form-controls">
                       <input
                         class="uk-input"
                         id="form-stacked-text"
                         type="text"
                         placeholder="Name"
+                        name="name"
                         v-model="name"
                       />
-                      <span v-if="nameError" class="uk-text-danger">{{ nameError }}</span>
+                      <span v-if="nameError" class="uk-text-danger text-sm">{{
+                        nameError
+                      }}</span>
                     </div>
                   </div>
 
@@ -36,9 +42,12 @@
                         id="form-stacked-email"
                         type="email"
                         placeholder="Email"
+                        name="email"
                         v-model="email"
                       />
-                      <span v-if="emailError" class="uk-text-danger">{{ emailError }}</span>
+                      <span v-if="emailError" class="uk-text-danger text-sm">{{
+                        emailError
+                      }}</span>
                     </div>
                   </div>
 
@@ -49,26 +58,32 @@
                         id="form-stacked-textarea"
                         rows="5"
                         placeholder="Message"
+                        name="message"
                         v-model="message"
                       ></textarea>
-                      <span v-if="messageError" class="uk-text-danger">{{ messageError }}</span>
+                      <span v-if="messageError" class="uk-text-danger">{{
+                        messageError
+                      }}</span>
                     </div>
                   </div>
 
                   <div class="uk-margin">
-                    <button class="uk-button uk-button-default" type="submit">Send Message</button>
+                    <button class="uk-button uk-button-default" type="submit">
+                      Send Message
+                    </button>
                   </div>
                 </form>
                 <div
                   class="flex justify-center items-center gap-2"
                   uk-scrollspy="cls: uk-animation-slide-right; target: .slide-item; delay: 100; repeat: true"
                 >
-                  <a
-                    href="#"
+                    <a
+                    href="https://line.me/ti/p/qawfI0LuNJ"
                     class="uk-icon-button no-underline slide-item"
                     style="text-decoration: none !important"
-                    >Line</a
-                  >
+                    target="_blank"
+                    >L</a
+                    >
 
                   <a
                     href="#"
@@ -110,7 +125,10 @@
                     href="#modal-center"
                     uk-toggle
                   >
-                    <span class="uk-icon-button text-10xl" uk-icon="icon: eye"></span>
+                    <span
+                      class="uk-icon-button text-10xl"
+                      uk-icon="icon: eye"
+                    ></span>
                   </a>
                 </div>
               </div>
@@ -126,7 +144,9 @@
         style="background-color: black"
       >
         <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-width-1-1 uk-height-1-1 p-12 flex justify-center items-center">
+        <div
+          class="uk-width-1-1 uk-height-1-1 p-12 flex justify-center items-center"
+        >
           <img src="/public/map.png" alt="map" class="w-[90%] h-[90%]" />
         </div>
       </div>
@@ -142,18 +162,64 @@ import * as yup from "yup";
 
 UIkit.use(Icons);
 
-const { value: name, errorMessage: nameError, validate: validateName } = useField('name', yup.string().required('Name is required'));
-const { value: email, errorMessage: emailError, validate: validateEmail } = useField('email', yup.string().email('Invalid email').required('Email is required'));
-const { value: message, errorMessage: messageError, validate: validateMessage } = useField('message', yup.string().required('Message is required'));
+const {
+  value: name,
+  errorMessage: nameError,
+  validate: validateName,
+} = useField("name", yup.string().required("Name is required"));
+const {
+  value: email,
+  errorMessage: emailError,
+  validate: validateEmail,
+} = useField(
+  "email",
+  yup.string().email("Invalid email format").required("Email is required")
+);
+const {
+  value: message,
+  errorMessage: messageError,
+  validate: validateMessage,
+} = useField("message", yup.string().required("Message is required"));
 
 const handleSubmit = async () => {
   const isNameValid = await validateName();
   const isEmailValid = await validateEmail();
   const isMessageValid = await validateMessage();
 
-  if (isNameValid && isEmailValid && isMessageValid) {
-    // Handle form submission
-    console.log("Form submitted", { name: name.value, email: email.value, message: message.value });
+  if (isNameValid.valid && isEmailValid.valid && isMessageValid.valid) {
+    console.log(isEmailValid, isMessageValid, isNameValid);
+    try {
+      const response = await fetch("https://formspree.io/f/mbldvwwp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.value,
+          email: email.value,
+          message: message.value,
+        }),
+      });
+
+      if (response.ok) {
+        UIkit.notification({
+          message: "Message sent successfully!",
+          status: "success",
+        });
+
+        // Reset form values after successful submission
+        // name.value = "";
+        // email.value = "";
+        // message.value = "";
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (error) {
+      UIkit.notification({
+        message: "Failed to send message. Please try again later.",
+        status: "danger",
+      });
+    }
   }
 };
 

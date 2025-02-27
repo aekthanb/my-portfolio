@@ -1,7 +1,6 @@
 <template>
-
   <div class="min-h-screen flex flex-col">
-    <main class="flex-1 pt-6 container mx-auto">
+    <main class="p-2 container mx-auto">
       <!-- แจ้งเตือนถ้าเป็นมือถือ -->
       <div class="block lg:hidden">
         <p class="text-center text-red-500">ไม่รองรับการแสดงผลบนอุปกรณ์นี้</p>
@@ -12,7 +11,6 @@
         <slot />
       </div>
     </main>
-
     <footer class="uk-text-center uk-text-large uk-visible@m">
       <nav>
         <ul class="uk-subnav uk-subnav-divider uk-flex-center">
