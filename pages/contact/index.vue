@@ -8,18 +8,18 @@
         </div> -->
           <div class="flex flex-col justify-center items-center">
             <p
-              class="text-center border-1 w-96 h-18 text-6xl font-bold mt-1 uk-animation-fade"
+              class="text-center w-96 h-18 text-6xl font-bold uk-animation-fade"
             >
               CONTACT
             </p>
             <div class="w-full flex justify-center items-center">
               <!-- form -->
-              <div class="w-[50%] h-[95%] rounded-md mt-6">
+              <div class="w-[50%] h-[95%] rounded-md">
                 <form
                   class="uk-form-stacked uk-animation-slide-left"
                   @submit.prevent="handleSubmit"
                 >
-                  <div class="uk-margin ">
+                  <div class="mb-2">
                     <div class="uk-form-controls">
                       <input
                         class="uk-input"
@@ -29,13 +29,16 @@
                         name="name"
                         v-model="name"
                       />
-                      <span v-if="nameError" class="uk-text-danger text-sm">{{
-                        nameError
-                      }}</span>
+                      <span
+                        class="text-red-500 text-sm block min-h-[1.25rem]"
+                        :class="{ invisible: !nameError, visible: nameError }"
+                      >
+                        {{ nameError || " " }}
+                      </span>
                     </div>
                   </div>
 
-                  <div class="uk-margin">
+                  <div class="mb-2">
                     <div class="uk-form-controls">
                       <input
                         class="uk-input"
@@ -45,13 +48,16 @@
                         name="email"
                         v-model="email"
                       />
-                      <span v-if="emailError" class="uk-text-danger text-sm">{{
-                        emailError
-                      }}</span>
+                      <span
+                        class="text-red-500 text-sm block min-h-[1.25rem]"
+                        :class="{ invisible: !emailError, visible: emailError }"
+                      >
+                        {{ emailError || " " }}
+                      </span>
                     </div>
                   </div>
 
-                  <div class="uk-margin">
+                  <div class="mb-2">
                     <div class="uk-form-controls">
                       <textarea
                         class="uk-textarea"
@@ -61,13 +67,19 @@
                         name="message"
                         v-model="message"
                       ></textarea>
-                      <span v-if="messageError" class="uk-text-danger">{{
-                        messageError
-                      }}</span>
+                      <span
+                        class="text-red-500 text-sm block min-h-[1.25rem]"
+                        :class="{
+                          invisible: !messageError,
+                          visible: messageError,
+                        }"
+                      >
+                        {{ messageError || " " }}
+                      </span>
                     </div>
                   </div>
 
-                  <div class="uk-margin">
+                  <div class="mb-2">
                     <button class="uk-button uk-button-default" type="submit">
                       Send Message
                     </button>
@@ -77,13 +89,13 @@
                   class="flex justify-center items-center gap-2"
                   uk-scrollspy="cls: uk-animation-slide-right; target: .slide-item; delay: 100; repeat: true"
                 >
-                    <a
+                  <a
                     href="https://line.me/ti/p/qawfI0LuNJ"
                     class="uk-icon-button no-underline slide-item"
                     style="text-decoration: none !important"
                     target="_blank"
                     >L</a
-                    >
+                  >
 
                   <a
                     href="#"
@@ -140,7 +152,7 @@
 
     <div id="modal-center" class="uk-flex-top uk-light hidden" uk-modal>
       <div
-        class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical uk-width-1-1 uk-height-1-1"
+        class="uk-modal-dialog uk-modal-body mb-2-auto-vertical uk-width-1-1 uk-height-1-1"
         style="background-color: black"
       >
         <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -166,19 +178,25 @@ const {
   value: name,
   errorMessage: nameError,
   validate: validateName,
+  resetField: resetName,
 } = useField("name", yup.string().required("Name is required"));
 const {
   value: email,
   errorMessage: emailError,
   validate: validateEmail,
+  resetField: resetEmail,
 } = useField(
   "email",
-  yup.string().email("Invalid email format").required("Email is required")
+  yup
+    .string()
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\./, "Invalid email format")
+    .required("Email is required")
 );
 const {
   value: message,
   errorMessage: messageError,
   validate: validateMessage,
+  resetField: resetMessage,
 } = useField("message", yup.string().required("Message is required"));
 
 const handleSubmit = async () => {
@@ -208,9 +226,9 @@ const handleSubmit = async () => {
         });
 
         // Reset form values after successful submission
-        // name.value = "";
-        // email.value = "";
-        // message.value = "";
+        resetName();
+        resetEmail();
+        resetMessage();
       } else {
         throw new Error("Failed to send message");
       }
@@ -229,5 +247,3 @@ const showNotification = () => {
   });
 };
 </script>
-
-<style></style>
